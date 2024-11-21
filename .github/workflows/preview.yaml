@@ -71,7 +71,8 @@ jobs:
 
       - name: Merge changes to main
         run: |
-          git checkout origin/main
+          git fetch origin  # 원격 브랜치 정보 갱신
+          git checkout -b main origin/main  # 원격 'main' 브랜치를 로컬로 체크아웃
           git pull origin main
           git merge develop -m "Automated merge from develop to main"
           git push origin main
