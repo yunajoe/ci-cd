@@ -77,7 +77,6 @@ jobs:
 
       - name: Merge changes to main
         run: |
-          git checkout main
           git pull origin main
           git merge develop --allow-unrelated-histories -m "Automated merge from develop to main"
           git push origin main
