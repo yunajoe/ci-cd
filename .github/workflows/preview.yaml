@@ -69,10 +69,15 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "github-actions@github.com"
 
+      - name: Check for merge conflicts
+        run: |
+          git fetch origin
+          git checkout main
+          git merge origin/develop || echo "Merge conflict detected. Please resolve manually."
+
       - name: Merge changes to main
         run: |
-          git fetch origin  # 원격 브랜치 정보 갱신
-          git checkout -b main origin/main  # 원격 'main' 브랜치를 로컬로 체크아웃
+          git checkout main
           git pull origin main
           git merge develop --allow-unrelated-histories -m "Automated merge from develop to main"
           git push origin main
