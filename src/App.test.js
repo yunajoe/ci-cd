@@ -1,6 +1,6 @@
-import App from "@/App";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/react";
+import App from "./App";
 
 describe("App Component", () => {
   test("App 컴퍼넌트를 실행 TEST", () => {
