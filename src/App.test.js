@@ -1,5 +1,5 @@
 import { fireEvent } from "@testing-library/dom";
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import App from "./App";
 
 describe("App Component", () => {
@@ -28,7 +28,6 @@ describe("App Component", () => {
     expect(countValue2).toBeInTheDocument();
   });
 
-  // 버튼 컴퍼넌트
   test("감소버튼을 클릭하면은 value가 감소하는지 TEST하기", () => {
     render(<App />);
 
