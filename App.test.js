@@ -4,7 +4,6 @@ import { render } from "@testing-library/react";
 describe("App Component", () => {
   test("App 컴퍼넌트를 실행 TEST", () => {
     render(<App />);
-
     const countValue = screen.getByText("0");
     expect(countValue).toBeInTheDocument();
   });
