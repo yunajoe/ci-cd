@@ -19,7 +19,6 @@ describe("App Component", () => {
     const countValue = screen.getByText("1");
     expect(countValue).toBeInTheDocument();
 
-    // 버튼 클릭2
     fireEvent.click(increaseButton);
     fireEvent.click(increaseButton);
     const countValue2 = screen.getByText("3");
@@ -29,16 +28,12 @@ describe("App Component", () => {
   test("감소버튼을 클릭하면은 value가 감소하는지 TEST하기", () => {
     render(<App />);
 
-    // 감소 버튼 get
     const decreaseButton = screen.getByRole("button", { name: "감소버튼" });
     expect(decreaseButton).toBeInTheDocument();
-
-    // 버튼 클릭
     fireEvent.click(decreaseButton);
     const countValue = screen.getByText("-1");
     expect(countValue).toBeInTheDocument();
 
-    // 버튼 클릭2
     fireEvent.click(decreaseButton);
     fireEvent.click(decreaseButton);
     const countValue2 = screen.getByText("-3");
