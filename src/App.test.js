@@ -12,11 +12,9 @@ describe("App Component", () => {
   test("증가버튼을 클릭하면은 value가 증가하는지 TEST하기", () => {
     render(<App />);
 
-    // 증가 버튼 get
     const increaseButton = screen.getByRole("button", { name: "증가버튼" });
     expect(increaseButton).toBeInTheDocument();
 
-    // 버튼 클릭
     fireEvent.click(increaseButton);
     const countValue = screen.getByText("1");
     expect(countValue).toBeInTheDocument();
