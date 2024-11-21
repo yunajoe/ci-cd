@@ -1,3 +1,4 @@
+import App from "@/App";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/react";
 
