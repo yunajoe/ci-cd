@@ -1,36 +1,80 @@
-name: Vercel Preview Deployment
-env:
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+name: Build, Test, and Merge to Main Branch
+
 on:
   push:
-    branches-ignore: -main
+    branches:
+      - develop # develop 브랜치에서 push 이벤트 발생 시 실행
+
+# env:
+#   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+#   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+run-name: ${{ github.actor }} is Build, Test, Merge Processing 🚀
+
 jobs:
-  Test:
+  build:
     runs-on: ubuntu-lastest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: 18
-      - run: npm ci
-      - run: npm run test:prod
+          node-version: "16"
 
-  Deploy-Preview:
-    needs: [Test]
-    runs-on: ubuntu-latest
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Build
+        run: |
+          echo "빌드를 시작합니다..."
+          npm run build  # 빌드 명령 실행
+          if [ $? -ne 0 ]; then
+            echo "빌드가 실패하였습니다"
+            exit 1  # 빌드 실패 시 워크플로우 종료 
+          fi
+  test:
+    runs-on: ubuntu-lastest
+    needs: build # build 작업이 성공적으로 완료된 후에 실행됨
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Install Vercel CLI
-        run: npm install --global vercel
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
 
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Install dependencies
+        run: npm install
 
-      - name: Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Run Tests
+        run: |
+          echo "테스트를 시작합니다..."
+          npm test  # 테스트 실행
+          if [ $? -ne 0 ]; then
+            echo "테스트가 실패하였습니다"
+            exit 1  # 테스트 실패 시 워크플로우 종료
+          fi
 
-      - name: Deploy Project Artifacts
-        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+    merge:
+      runs-on: ubuntu-latest
+      needs: test # test 작업이 성공적으로 완료된 후에 실행됨
+      if: success() # 빌드와 테스트가 모두 성공하면 실행
+
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+
+        - name: Set up Git
+          run: |
+            git config --global user.name "GitHub Actions"
+            git config --global user.email "github-actions@github.com"
+
+        - name: Merge changes to main
+           run: |
+            git checkout main
+            git pull origin main 
+            git merge develop -m "Automated merge from develop to main"  
+            git push origin main 
+
