@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import App from "./App";
 
 describe("App Component", () => {
-  test("App 컴퍼넌트를 실행 TEST", () => {
+  test("App 컴퍼넌트 렌더링되는지 TEST하기", () => {
     render(<App />);
     const countValue = screen.getByText("0");
     expect(countValue).toBeInTheDocument();
