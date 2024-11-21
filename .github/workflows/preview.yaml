@@ -5,14 +5,11 @@ on:
     branches:
       - develop # develop 브랜치에서 push 이벤트 발생 시 실행
 
-# env:
-#   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-#   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
 run-name: ${{ github.actor }} is Build, Test, Merge Processing 🚀
 
 jobs:
   build:
-    runs-on: ubuntu-lastest
+    runs-on: ubuntu-latest  # 'ubuntu-lastest' -> 'ubuntu-latest'로 수정
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -33,8 +30,9 @@ jobs:
             echo "빌드가 실패하였습니다"
             exit 1  # 빌드 실패 시 워크플로우 종료 
           fi
+
   test:
-    runs-on: ubuntu-lastest
+    runs-on: ubuntu-latest  # 'ubuntu-lastest' -> 'ubuntu-latest'로 수정
     needs: build # build 작업이 성공적으로 완료된 후에 실행됨
     steps:
       - name: Checkout code
@@ -57,24 +55,23 @@ jobs:
             exit 1  # 테스트 실패 시 워크플로우 종료
           fi
 
-    merge:
-      runs-on: ubuntu-latest
-      needs: test # test 작업이 성공적으로 완료된 후에 실행됨
-      if: success() # 빌드와 테스트가 모두 성공하면 실행
+  merge:
+    runs-on: ubuntu-latest  # 'ubuntu-lastest' -> 'ubuntu-latest'로 수정
+    needs: test  # test 작업이 성공적으로 완료된 후에 실행됨
+    if: success()  # 빌드와 테스트가 모두 성공하면 실행
 
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-        - name: Set up Git
-          run: |
-            git config --global user.name "GitHub Actions"
-            git config --global user.email "github-actions@github.com"
+      - name: Set up Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "github-actions@github.com"
 
-        - name: Merge changes to main
-           run: |
-            git checkout main
-            git pull origin main 
-            git merge develop -m "Automated merge from develop to main"  
-            git push origin main 
-
+      - name: Merge changes to main
+        run: |
+          git checkout main
+          git pull origin main
+          git merge develop -m "Automated merge from develop to main"
+          git push origin main
